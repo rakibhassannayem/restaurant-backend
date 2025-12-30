@@ -37,26 +37,211 @@ async function run() {
 
     const db = client.db("restaurant_db");
     const restaurantCollection = db.collection("restaurants");
+    const ordersCollection = db.collection("orders");
+    const reviewsCollection = db.collection("reviews");
+    const usersCollection = db.collection("users");
+    const menuItemsCollection = db.collection("menuItems");
 
+    // CREATE
+    app.post("/restaurants", async (req, res) => {
+      const restaurant = req.body;
+      const result = await restaurantCollection.insertOne(restaurant);
+      res.send(result);
+    });
+
+    // READ ALL
     app.get("/restaurants", async (req, res) => {
       const result = await restaurantCollection.find().toArray();
       res.send(result);
     });
 
+    // READ ONE
     app.get("/restaurants/:id", async (req, res) => {
-      const id = req.params.id;
-      const result = await restaurantCollection.findOne({ _id: new ObjectId(id) });
+      const result = await restaurantCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
       res.send(result);
     });
 
+    // UPDATE
+    app.put("/restaurants/:id", async (req, res) => {
+      const updatedRestaurant = req.body;
+      const result = await restaurantCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: updatedRestaurant }
+      );
+      res.send(result);
+    });
+
+    // DELETE
+    app.delete("/restaurants/:id", async (req, res) => {
+      const result = await restaurantCollection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // CREATE
+    app.post("/orders", async (req, res) => {
+      const order = req.body;
+      const result = await ordersCollection.insertOne(order);
+      res.send(result);
+    });
+
+    // READ ALL
+    app.get("/orders", async (req, res) => {
+      const result = await ordersCollection.find().toArray();
+      res.send(result);
+    });
+
+    // READ ONE
+    app.get("/orders/:id", async (req, res) => {
+      const result = await ordersCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // UPDATE
+    app.put("/orders/:id", async (req, res) => {
+      const updatedOrder = req.body;
+      const result = await ordersCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: updatedOrder }
+      );
+      res.send(result);
+    });
+
+    // DELETE
+    app.delete("/orders/:id", async (req, res) => {
+      const result = await ordersCollection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // CREATE
+    app.post("/menuItems", async (req, res) => {
+      const item = req.body;
+      const result = await menuItemsCollection.insertOne(item);
+      res.send(result);
+    });
+
+    // READ ALL
+    app.get("/menuItems", async (req, res) => {
+      const result = await menuItemsCollection.find().toArray();
+      res.send(result);
+    });
+
+    // READ ONE
+    app.get("/menuItems/:id", async (req, res) => {
+      const result = await menuItemsCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // UPDATE
+    app.put("/menuItems/:id", async (req, res) => {
+      const updatedItem = req.body;
+      const result = await menuItemsCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: updatedItem }
+      );
+      res.send(result);
+    });
+
+    // DELETE
+    app.delete("/menuItems/:id", async (req, res) => {
+      const result = await menuItemsCollection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // CREATE
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await reviewsCollection.insertOne(review);
+      res.send(result);
+    });
+
+    // READ ALL
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewsCollection.find().toArray();
+      res.send(result);
+    });
+
+    // READ ONE
+    app.get("/reviews/:id", async (req, res) => {
+      const result = await reviewsCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // UPDATE
+    app.put("/reviews/:id", async (req, res) => {
+      const updatedReview = req.body;
+      const result = await reviewsCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: updatedReview }
+      );
+      res.send(result);
+    });
+
+    // DELETE
+    app.delete("/reviews/:id", async (req, res) => {
+      const result = await reviewsCollection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    app.post("/user", async (req, res) => {
+      const userData = req.body;
+      userData.role = "customer";
+      userData.createdAt = new Date();
+      const email = userData.email;
+      const userExists = await usersCollection.findOne({ email });
+
+      if (userExists) {
+        return res.send({ message: "User Already Exists" });
+      }
+
+      const result = await usersCollection.insertOne(userData);
+      res.send(result);
+    });
+
+    // READ ALL
     app.get("/users", async (req, res) => {
-      const result = await restaurantCollection.findOne();
+      const result = await usersCollection.find().toArray();
       res.send(result);
     });
 
-    app.get("/restaurants/:id", async (req, res) => {
-      const id = req.params.id;
-      const result = await restaurantCollection.findOne({ _id: new ObjectId(id) });
+    // READ ONE
+    app.get("/users/:id", async (req, res) => {
+      const result = await usersCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // UPDATE
+    app.put("/users/:id", async (req, res) => {
+      const updatedUser = req.body;
+      const result = await usersCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        { $set: updatedUser }
+      );
+      res.send(result);
+    });
+
+    // DELETE
+    app.delete("/users/:id", async (req, res) => {
+      const result = await usersCollection.deleteOne({
+        _id: new ObjectId(req.params.id),
+      });
       res.send(result);
     });
 
