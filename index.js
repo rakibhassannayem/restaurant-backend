@@ -3,8 +3,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const admin = require("firebase-admin");
-const jwt = require("jsonwebtoken");
+// const admin = require("firebase-admin");
+// const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 3000;
 
 // const serviceAccount = require("./clubsphere-firebase-adminsdk.json");
@@ -33,7 +33,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const db = client.db("restaurant_db");
     const restaurantCollection = db.collection("restaurants");
@@ -45,6 +45,12 @@ async function run() {
     // CREATE
     app.post("/restaurants", async (req, res) => {
       const restaurant = req.body;
+      const email = restaurant.restaurantEmail;
+      const restaurantExists = await restaurantCollection.findOne({ restaurantEmail: email });
+
+      if (restaurantExists) {
+        return res.send({ message: "Restaurant Already Exists" });
+      }
       const result = await restaurantCollection.insertOne(restaurant);
       res.send(result);
     });
@@ -246,10 +252,10 @@ async function run() {
     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    // await client.db("admin").command({ ping: 1 });
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to MongoDB!"
+    // );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
