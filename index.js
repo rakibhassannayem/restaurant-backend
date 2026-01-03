@@ -46,7 +46,9 @@ async function run() {
     app.post("/restaurants", async (req, res) => {
       const restaurant = req.body;
       const email = restaurant.restaurantEmail;
-      const restaurantExists = await restaurantCollection.findOne({ restaurantEmail: email });
+      const restaurantExists = await restaurantCollection.findOne({
+        restaurantEmail: email,
+      });
 
       if (restaurantExists) {
         return res.send({ message: "Restaurant Already Exists" });
@@ -206,7 +208,6 @@ async function run() {
 
     app.post("/user", async (req, res) => {
       const userData = req.body;
-      userData.role = "customer";
       userData.createdAt = new Date();
       const email = userData.email;
       const userExists = await usersCollection.findOne({ email });
@@ -249,6 +250,14 @@ async function run() {
         _id: new ObjectId(req.params.id),
       });
       res.send(result);
+    });
+
+    app.get("/user/role", async (req, res) => {
+      const email = req.query.email;
+
+      const result = await usersCollection.findOne({ email });
+
+      res.send({ role: result?.role || "customer" });
     });
 
     // Send a ping to confirm a successful connection
