@@ -63,6 +63,14 @@ async function run() {
       res.send(result);
     });
 
+    // READ BY OWNER EMAIL
+    app.get("/restaurants/owner/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { owner: email };
+      const result = await restaurantCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // READ ONE
     app.get("/restaurants/:id", async (req, res) => {
       const result = await restaurantCollection.findOne({
@@ -138,6 +146,14 @@ async function run() {
     // READ ALL
     app.get("/menuItems", async (req, res) => {
       const result = await menuItemsCollection.find().toArray();
+      res.send(result);
+    });
+
+    // READ BY RESTAURANT ID
+    app.get("/menuItems/restaurant/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { restaurantId: id };
+      const result = await menuItemsCollection.find(query).toArray();
       res.send(result);
     });
 
